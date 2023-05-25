@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <title>Adicionar e Remover Elementos da Tabela</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        table td {
+            border: 1px solid black;
+            padding: 5px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .acao {
+            width: 10%;
+        }
+
+        .selected {
+            background-color: rgb(255, 251, 0);
+        }
+
+        .tabela {
+            margin-top: 70px;
+        }
+
+        .h1 {
+            font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+                "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .add {
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            background-color: transparent;
+            position: fixed;
+            bottom: 0;
+            font-size: 20px;
+            text-align: center;
+            margin-left: 91%;
+            border: none;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            margin-bottom: 2%;
+        }
+
+        img {
+            width: 100px;
+        }
+
+        button {
+            border: none;
+        }
+
+        .mod {
+            width: 150px;
+        }
+
+        .day {
+            width: 150px;
+        }
+
+        .mac {
+            width: 25   0px;
+        }
+
+        .add button {
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            background-color: transparent;
+        }
+
+        .remove {
+            background-color: rgb(228, 65, 65);
+            color: white;
+            width: 150px;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="h1">Tabela de Controle de Roteadores</h1>
+
+    <table id="tabela" class="tabela">
+        <tr>
+            <th>MARCA</th>
+            <th class="mod">MODELO</th>
+            <th class="mac">MAC</th>
+            <th class="day">DIA DA SAÍDA</th>
+            <th class="tec">TÉCNICO</th>
+            <th>CLIENTE</th>
+            <th class="acao">AÇÃO</th>
+        </tr>
+    </table>
+
+    <button id="adicionarBtn" class="add">&#43</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabela = document.getElementById("tabela");
+            const adicionarBtn = document.getElementById("adicionarBtn");
+            let rowsData = [];
+
+            adicionarBtn.addEventListener("click", function () {
+                const marca = prompt("Digite a Marca:");
+                const modelo = prompt("Digite o Modelo:");
+                const mac = prompt("Digite o Mac:");
+                const diaSaida = prompt("Digite o Dia da Saída:");
+                const tecnico = prompt("Digite o Técnico:");
+                const cliente = prompt("Digite o Cliente Destinado:");
+
+                const rowData = {
+                    marca: marca,
+                    modelo: modelo,
+                    mac: mac,
+                    diaSaida: diaSaida,
+                    tecnico: tecnico,
+                    cliente: cliente
+                };
+
+                rowsData.push(rowData);
+                localStorage.setItem("rowsData", JSON.stringify(rowsData));
+                renderTable();
+            });
+
+            function renderTable() {
+                tabela.innerHTML = `
+                    <tr>
+                        <th>MARCA</th>
+                        <th class="mod">MODELO</th>
+                        <th class="mac">MAC</th>
+                        <th class="day">DIA DA SAÍDA</th>
+                        <th class="tec">TÉCNICO</th>
+                        <th>CLIENTE</th>
+                        <th class="acao">AÇÃO</th>
+                    </tr>
+                `;
+
+                rowsData.forEach(function (rowData) {
+                    const novaLinha = document.createElement("tr");
+                    const colunaMarca = document.createElement("td");
+                    const colunaModelo = document.createElement("td");
+                    const colunaMAC = document.createElement("td");
+                    const colunaDiaSaida = document.createElement("td");
+                    const colunaTecnico = document.createElement("td");
+                    const colunaCliente = document.createElement("td");
+                    const colunaAcao = document.createElement("td");
+                    const removerBtn = document.createElement("button");
+                    removerBtn.classList.add("remove");
+
+                    colunaMarca.textContent = rowData.marca;
+                    colunaModelo.textContent = rowData.modelo;
+                    colunaMAC.textContent = rowData.mac;
+                    colunaDiaSaida.textContent = rowData.diaSaida;
+                    colunaTecnico.textContent = rowData.tecnico;
+                    colunaCliente.textContent = rowData.cliente;
+                    removerBtn.textContent = "Remover";
+
+                    colunaAcao.appendChild(removerBtn);
+
+                    novaLinha.appendChild(colunaMarca);
+                    novaLinha.appendChild(colunaModelo);
+                    novaLinha.appendChild(colunaMAC);
+                    novaLinha.appendChild(colunaDiaSaida);
+                    novaLinha.appendChild(colunaTecnico);
+                    novaLinha.appendChild(colunaCliente);
+                    novaLinha.appendChild(colunaAcao);
+
+                    tabela.appendChild(novaLinha);
+
+                    removerBtn.addEventListener("click", function () {
+                        const rowIndex = rowsData.indexOf(rowData);
+                        rowsData.splice(rowIndex, 1);
+                        localStorage.setItem("rowsData", JSON.stringify(rowsData));
+                        renderTable();
+                    });
+                });
+            }
+
+            // Recupera os dados armazenados localmente ao carregar a página
+            const storedData = localStorage.getItem("rowsData");
+            if (storedData) {
+                rowsData = JSON.parse(storedData);
+                renderTable();
+            }
+        });
+    </script>
+</body>
+
+</html>
